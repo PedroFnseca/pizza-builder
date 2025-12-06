@@ -9,6 +9,10 @@ describe('Store', () => {
     resetStore();
   });
 
+  it('reports the in-memory store as healthy', () => {
+    expect(store.isHealthy()).toBe(true);
+  });
+
   it('writes and reads from a table', () => {
     store.write('pizzas', { id: 'p1', customerName: 'Alice', sizeId: 'm', ingredientIds: ['i1'] });
 

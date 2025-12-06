@@ -9,6 +9,10 @@ class Store {
     };
   }
 
+  isHealthy() {
+    return true;
+  }
+
   read(table, options) {
     return this.getTable(table).read(options?.filters, options?.sort);
   }

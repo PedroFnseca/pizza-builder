@@ -9,6 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,9 +21,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-
-      - name: Enter project directory
-        run: cd api
+          cache-dependency-path: api/package-lock.json
 
       - name: Install dependencies
         run: npm install

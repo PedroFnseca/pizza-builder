@@ -22,6 +22,13 @@ class Table {
         const av = a[sort.by];
         const bv = b[sort.by];
         if (typeof av === 'string' && typeof bv === 'string') return av.localeCompare(bv) * dir;
+        const an = Number(av);
+        const bn = Number(bv);
+        if (!Number.isNaN(an) && !Number.isNaN(bn)) {
+          if (an > bn) return dir;
+          if (an < bn) return -dir;
+          return 0;
+        }
         if (av > bv) return dir;
         if (av < bv) return -dir;
         return 0;

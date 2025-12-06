@@ -3,7 +3,7 @@ import Table from './table.js';
 class Store {
   constructor() {
     this.tables = {
-      pizzas: new Table(['id', 'customerName', 'sizeId', 'ingredientIds']),
+      pizzas: new Table(['id', 'customerName', 'sizeId', 'ingredientIds', 'createdAt', 'finalPrice']),
       sizes: new Table(['id', 'name', 'basePrice']),
       ingredients: new Table(['id', 'name', 'extraPrice'])
     };

@@ -9,7 +9,7 @@ class PizzaController {
   }
 
   get(req, res) {
-    const pizzas = this.service.getAll();
+    const pizzas = this.service.getAll(req.query);
     return res.status(200).json(pizzas);
   }
 
@@ -20,14 +20,22 @@ class PizzaController {
   }
 
   create(req, res) {
-    const pizza = this.service.create(req.body);
-    return res.status(201).json(pizza);
+    try {
+      const pizza = this.service.create(req.body);
+      return res.status(201).json(pizza);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
   }
 
   update(req, res) {
-    const updated = this.service.update(req.params.id, req.body);
-    if (!updated) return res.status(404).json({ message: 'Pizza not found' });
-    return res.status(200).json(updated);
+    try {
+      const updated = this.service.update(req.params.id, req.body);
+      if (!updated) return res.status(404).json({ message: 'Pizza not found' });
+      return res.status(200).json(updated);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
   }
 
   delete(req, res) {

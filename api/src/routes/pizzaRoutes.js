@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import PizzaController from '../controllers/PizzaController.js';
 import PizzaService from '../services/PizzaService.js';
 import store from '../database/store.js';
@@ -8,7 +8,15 @@ import validateRequest from '../validators/validateRequest.js';
 const router = Router();
 const controller = new PizzaController(new PizzaService(store));
 
-router.get('/', controller.get);
+router.get(
+  '/',
+  validateRequest([
+    query('customerName').optional().isString().notEmpty(),
+    query('sortBy').optional().isIn(['finalPrice', 'createdAt']),
+    query('order').optional().isIn(['asc', 'desc'])
+  ]),
+  controller.get
+);
 
 router.get(
   '/:id',
@@ -19,10 +27,9 @@ router.get(
 router.post(
   '/',
   validateRequest([
-    body('id').isString().notEmpty(),
     body('customerName').isString().notEmpty(),
     body('sizeId').isString().notEmpty(),
-    body('ingredientIds').isArray(),
+    body('ingredientIds').isArray({ min: 1 }),
     body('ingredientIds.*').isString().notEmpty()
   ]),
   controller.create
@@ -34,7 +41,7 @@ router.put(
     param('id').isString().notEmpty(),
     body('customerName').optional().isString().notEmpty(),
     body('sizeId').optional().isString().notEmpty(),
-    body('ingredientIds').optional().isArray(),
+    body('ingredientIds').optional().isArray({ min: 1 }),
     body('ingredientIds.*').optional().isString().notEmpty()
   ]),
   controller.update

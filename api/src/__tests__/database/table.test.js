@@ -34,6 +34,18 @@ describe('Table', () => {
     expect(result[0].price).toBeGreaterThan(result[1].price);
   });
 
+  it('sorts by numeric and string columns through sort option', () => {
+    table.write({ id: '1', name: 'Alpha', tags: [], price: 5 });
+    table.write({ id: '2', name: 'Charlie', tags: [], price: 15 });
+    table.write({ id: '3', name: 'Bravo', tags: [], price: 10 });
+
+    const asc = table.read({}, { by: 'price', order: 'asc' });
+    expect(asc.map(item => item.id)).toEqual(['1', '3', '2']);
+
+    const desc = table.read({}, { by: 'name', order: 'desc' });
+    expect(desc.map(item => item.name)).toEqual(['Charlie', 'Bravo', 'Alpha']);
+  });
+
   it('updates existing records while preserving id', () => {
     table.write({ id: '5', name: 'Four Cheese', tags: ['cheesy'], price: 15 });
 

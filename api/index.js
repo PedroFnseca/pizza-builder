@@ -2,6 +2,7 @@ import express from 'express';
 import logger from 'logger-endpoints-api';
 import cors from 'cors';
 import store from './src/database/store.js';
+import seedDatabase from './src/database/seed.js';
 import routes from './src/routes.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './src/swagger.js';
@@ -18,6 +19,8 @@ app.use(cors({
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(routes);
+
+seedDatabase();
 
 app.get('/health', (req, res) => {
   const databaseHealthy = store.isHealthy();

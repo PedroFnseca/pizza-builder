@@ -2,6 +2,7 @@ import express from 'express';
 import logger from 'logger-endpoints-api';
 import cors from 'cors';
 import store from './src/database/store.js';
+import routes from './src/routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +13,7 @@ app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
+app.use(routes);
 
 app.get('/health', (req, res) => {
   const databaseHealthy = store.isHealthy();

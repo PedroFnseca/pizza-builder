@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'mobile/**'
 
 jobs:
   create-release:
@@ -22,15 +24,35 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('mobile/android/gradle/wrapper/gradle-wrapper.properties', 'mobile/android/**/*.gradle*', 'mobile/**/*.gradle*', 'mobile/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/lib/android/sdk
+          key: ${{ runner.os }}-android-sdk-${{ hashFiles('mobile/android/gradle/wrapper/gradle-wrapper.properties', 'mobile/android/**/*.gradle*', 'mobile/**/*.gradle*', 'mobile/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-android-sdk-
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
       - name: Prebuild Android project
-        run: npx expo prebuild --platform android --clean
+        run: npx expo prebuild --platform android
 
       - name: Create assets directory
         run: mkdir -p android/app/src/main/assets

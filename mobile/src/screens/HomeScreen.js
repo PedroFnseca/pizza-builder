@@ -9,7 +9,7 @@ export default function HomeScreen({ navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.hero}>
-        <Text style={styles.title}>Craft pizzas fast, track every order</Text>
+        <Text style={styles.title}>Create pizzas, track order</Text>
         <Text style={styles.subtitle}>
           Start a brand new pizza or review the orders you already placed.
         </Text>

@@ -24,7 +24,6 @@ This is a small POC that models a pizza builder workflow with an in-memory datab
 - React Native app using React Query for caching with different staleness times per screen.
 - Codebase follows OOP and SOLID principles in JavaScript to keep services and controllers decoupled.
 - ESLint enforces consistent style across API and mobile packages.
-- Mobile APK release workflow on GitHub Actions to generate signed APKs on pushes to `main`.
 
 ## Architecture
 - API: Express routes, controllers, services, and validators over an in-memory store; Swagger for docs; logger middleware for observability.

@@ -26,6 +26,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Prebuild Android project
+        run: npx expo prebuild --platform android --clean
+
       - name: Create assets directory
         run: mkdir -p android/app/src/main/assets
 

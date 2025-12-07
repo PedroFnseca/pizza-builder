@@ -30,6 +30,7 @@
   },
   "private": true,
   "devDependencies": {
+    "@react-native-community/cli": "latest",
     "babel-preset-expo": "^54.0.8",
     "eslint-plugin-react": "^7.37.5"
   }

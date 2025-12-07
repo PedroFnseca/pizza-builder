@@ -1,20 +1,28 @@
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import RootNavigator from './src/navigation/RootNavigator';
+import { colors } from './src/styles/theme';
+
+const navigationTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: colors.background,
+    card: colors.surface,
+    text: colors.textPrimary,
+    primary: colors.accent,
+    border: colors.border,
+  },
+};
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <SafeAreaView className="flex-1 bg-zinc-900 items-center justify-center">
-        <View className="w-11/12 max-w-md rounded-2xl border border-white/10 bg-white/5 p-6">
-          <Text className="text-2xl font-semibold text-white">Pizza Builder</Text>
-          <Text className="mt-2 text-base text-zinc-200">
-            Tailwind (NativeWind) ja esta configurado. Edite este componente e
-            use classes utilitarias com `className`. teste
-          </Text>
-        </View>
+      <NavigationContainer theme={navigationTheme}>
+        <RootNavigator />
         <StatusBar style="light" />
-      </SafeAreaView>
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }

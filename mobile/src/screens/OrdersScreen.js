@@ -7,7 +7,7 @@ import EmptyState from '../components/EmptyState';
 import ErrorMessage from '../components/ErrorMessage';
 import SectionHeader from '../components/SectionHeader';
 import { usePizzasQuery } from '../query/hooks';
-import { colors, spacing, typography } from '../styles/theme';
+import { useAppTheme } from '../styles/ThemeProvider';
 
 const formatMoney = (value) => `$${Number(value ?? 0).toFixed(2)}`;
 const formatDate = (value) => {
@@ -17,6 +17,8 @@ const formatDate = (value) => {
 };
 
 export default function OrdersScreen({ navigation }) {
+  const theme = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [customerFilter, setCustomerFilter] = useState('');
   const [debouncedCustomer, setDebouncedCustomer] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');
@@ -80,7 +82,7 @@ export default function OrdersScreen({ navigation }) {
       <SectionHeader title="Orders" />
       {loading ? (
         <View style={styles.loading}>
-          <ActivityIndicator color={colors.accent} />
+          <ActivityIndicator color={theme.colors.accent} />
           <Text style={styles.loadingText}>Loading pizzas…</Text>
         </View>
       ) : errorMessage ? (
@@ -107,60 +109,61 @@ export default function OrdersScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: colors.background,
-    padding: spacing.lg,
-    gap: spacing.lg,
-  },
-  filterCard: {
-    gap: spacing.md,
-  },
-  sortRow: {
-    gap: spacing.sm,
-  },
-  sortLabel: {
-    color: colors.textSecondary,
-    fontSize: typography.caption,
-  },
-  sortActions: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  loading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  loadingText: {
-    color: colors.textSecondary,
-  },
-  pizzaCard: {
-    gap: spacing.xs,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  customer: {
-    color: colors.textPrimary,
-    fontSize: typography.subtitle,
-    fontWeight: typography.weightBold,
-  },
-  price: {
-    color: colors.accent,
-    fontWeight: typography.weightBold,
-    fontSize: typography.subtitle,
-  },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  meta: {
-    color: colors.textSecondary,
-    fontSize: typography.caption,
-  },
-});
+const createStyles = ({ colors, spacing, typography }) =>
+  StyleSheet.create({
+    container: {
+      flexGrow: 1,
+      backgroundColor: colors.background,
+      padding: spacing.lg,
+      gap: spacing.lg,
+    },
+    filterCard: {
+      gap: spacing.md,
+    },
+    sortRow: {
+      gap: spacing.sm,
+    },
+    sortLabel: {
+      color: colors.textSecondary,
+      fontSize: typography.caption,
+    },
+    sortActions: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+      flexWrap: 'wrap',
+    },
+    loading: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    loadingText: {
+      color: colors.textSecondary,
+    },
+    pizzaCard: {
+      gap: spacing.xs,
+    },
+    cardHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    customer: {
+      color: colors.textPrimary,
+      fontSize: typography.subtitle,
+      fontWeight: typography.weightBold,
+    },
+    price: {
+      color: colors.accent,
+      fontWeight: typography.weightBold,
+      fontSize: typography.subtitle,
+    },
+    cardFooter: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    meta: {
+      color: colors.textSecondary,
+      fontSize: typography.caption,
+    },
+  });

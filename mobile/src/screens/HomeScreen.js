@@ -1,8 +1,11 @@
+import { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import AppButton from '../components/AppButton';
-import { colors, spacing, typography } from '../styles/theme';
+import { useAppTheme } from '../styles/ThemeProvider';
 
 export default function HomeScreen({ navigation }) {
+  const theme = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.hero}>
@@ -23,44 +26,45 @@ export default function HomeScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: colors.background,
-    padding: spacing.xl,
-    gap: spacing.xl,
-  },
-  hero: {
-    gap: spacing.md,
-  },
-  eyebrow: {
-    color: colors.accent,
-    fontSize: typography.caption,
-    letterSpacing: 1,
-  },
-  title: {
-    color: colors.textPrimary,
-    fontSize: 30,
-    fontWeight: typography.weightBold,
-  },
-  subtitle: {
-    color: colors.textSecondary,
-    fontSize: typography.body,
-    lineHeight: 22,
-  },
-  actions: {
-    gap: spacing.sm,
-    marginTop: spacing.sm,
-  },
-  cardTitle: {
-    color: colors.textPrimary,
-    fontWeight: typography.weightBold,
-    fontSize: typography.subtitle,
-    marginBottom: spacing.sm,
-  },
-  cardBody: {
-    color: colors.textSecondary,
-    fontSize: typography.body,
-    marginBottom: spacing.xs,
-  },
-});
+const createStyles = ({ colors, spacing, typography }) =>
+  StyleSheet.create({
+    container: {
+      flexGrow: 1,
+      backgroundColor: colors.background,
+      padding: spacing.xl,
+      gap: spacing.xl,
+    },
+    hero: {
+      gap: spacing.md,
+    },
+    eyebrow: {
+      color: colors.accent,
+      fontSize: typography.caption,
+      letterSpacing: 1,
+    },
+    title: {
+      color: colors.textPrimary,
+      fontSize: 30,
+      fontWeight: typography.weightBold,
+    },
+    subtitle: {
+      color: colors.textSecondary,
+      fontSize: typography.body,
+      lineHeight: 22,
+    },
+    actions: {
+      gap: spacing.sm,
+      marginTop: spacing.sm,
+    },
+    cardTitle: {
+      color: colors.textPrimary,
+      fontWeight: typography.weightBold,
+      fontSize: typography.subtitle,
+      marginBottom: spacing.sm,
+    },
+    cardBody: {
+      color: colors.textSecondary,
+      fontSize: typography.body,
+      marginBottom: spacing.xs,
+    },
+  });

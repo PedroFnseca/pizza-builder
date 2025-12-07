@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { usePizzaQuery } from '../query/hooks';
 import Card from '../components/Card';
 import EmptyState from '../components/EmptyState';
 import InfoRow from '../components/InfoRow';
-import { colors, spacing, typography } from '../styles/theme';
+import { usePizzaQuery } from '../query/hooks';
+import { useAppTheme } from '../styles/ThemeProvider';
 
 const formatMoney = (value) => `$${Number(value ?? 0).toFixed(2)}`;
 const formatDateTime = (value) => {
@@ -16,6 +16,8 @@ const formatDateTime = (value) => {
 export default function PizzaDetailsScreen({ route }) {
   const { id, initialPizza } = route.params || {};
   const [notFound, setNotFound] = useState(false);
+  const theme = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   useEffect(() => setNotFound(false), [id]);
 
@@ -37,7 +39,7 @@ export default function PizzaDetailsScreen({ route }) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={theme.colors.accent} />
         <Text style={styles.meta}>Loading pizza…</Text>
       </View>
     );
@@ -78,28 +80,29 @@ export default function PizzaDetailsScreen({ route }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: colors.background,
-    padding: spacing.lg,
-  },
-  card: {
-    gap: spacing.sm,
-  },
-  center: {
-    flex: 1,
-    backgroundColor: colors.background,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-  },
-  title: {
-    color: colors.textPrimary,
-    fontSize: typography.subtitle,
-    fontWeight: typography.weightBold,
-  },
-  meta: {
-    color: colors.textSecondary,
-  },
-});
+const createStyles = ({ colors, spacing, typography }) =>
+  StyleSheet.create({
+    container: {
+      flexGrow: 1,
+      backgroundColor: colors.background,
+      padding: spacing.lg,
+    },
+    card: {
+      gap: spacing.sm,
+    },
+    center: {
+      flex: 1,
+      backgroundColor: colors.background,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing.sm,
+    },
+    title: {
+      color: colors.textPrimary,
+      fontSize: typography.subtitle,
+      fontWeight: typography.weightBold,
+    },
+    meta: {
+      color: colors.textSecondary,
+    },
+  });

@@ -13,11 +13,13 @@ import {
   useIngredientsQuery,
   useSizesQuery,
 } from '../query/hooks';
-import { colors, spacing } from '../styles/theme';
+import { useAppTheme } from '../styles/ThemeProvider';
 
 const formatMoney = (value) => `$${Number(value ?? 0).toFixed(2)}`;
 
 export default function NewOrderScreen({ navigation }) {
+  const theme = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const [customerName, setCustomerName] = useState('');
   const [sizeId, setSizeId] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
@@ -155,14 +157,15 @@ export default function NewOrderScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: colors.background,
-    padding: spacing.lg,
-    gap: spacing.lg,
-  },
-  listCard: {
-    gap: spacing.sm,
-  },
-});
+const createStyles = ({ colors, spacing }) =>
+  StyleSheet.create({
+    container: {
+      flexGrow: 1,
+      backgroundColor: colors.background,
+      padding: spacing.lg,
+      gap: spacing.lg,
+    },
+    listCard: {
+      gap: spacing.sm,
+    },
+  });

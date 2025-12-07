@@ -1,4 +1,4 @@
-export const colors = {
+export const darkColors = {
   background: '#18181b',
   surface: 'rgba(255, 255, 255, 0.05)',
   surfaceRaised: 'rgba(255, 255, 255, 0.08)',
@@ -10,6 +10,20 @@ export const colors = {
   accentMuted: '#fed7aa',
   success: '#22c55e',
   danger: '#ef4444',
+};
+
+export const lightColors = {
+  background: '#f7f7f8',
+  surface: '#ffffff',
+  surfaceRaised: '#f1f5f9',
+  border: '#e2e8f0',
+  textPrimary: '#0f172a',
+  textSecondary: '#334155',
+  muted: '#64748b',
+  accent: '#f97316',
+  accentMuted: '#fb923c',
+  success: '#16a34a',
+  danger: '#dc2626',
 };
 
 export const spacing = {

@@ -1,5 +1,6 @@
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, spacing, radii, typography } from '../styles/theme';
+import { useAppTheme } from '../styles/ThemeProvider';
 
 export default function SelectableTile({
   title,
@@ -9,6 +10,8 @@ export default function SelectableTile({
   onPress,
   type = 'radio',
 }) {
+  const theme = useAppTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const isSelected = selected === true || selected === 'true';
   const isCheckbox = type === 'checkbox';
   const indicatorStyle = isSelected ? styles.indicatorOn : styles.indicatorOff;
@@ -26,56 +29,57 @@ export default function SelectableTile({
   );
 }
 
-const styles = StyleSheet.create({
-  tile: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    padding: spacing.md,
-    borderRadius: radii.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surfaceRaised,
-  },
-  tileActive: {
-    borderColor: colors.accent,
-    backgroundColor: colors.surface,
-  },
-  indicator: {
-    width: 22,
-    height: 22,
-    borderWidth: 2,
-    borderColor: colors.muted,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  circle: {
-    borderRadius: 12,
-  },
-  square: {
-    borderRadius: 6,
-  },
-  indicatorOn: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
-  },
-  indicatorOff: {
-    backgroundColor: 'transparent',
-  },
-  texts: {
-    flex: 1,
-    gap: 2,
-  },
-  title: {
-    color: colors.textPrimary,
-    fontWeight: typography.weightBold,
-    fontSize: typography.body,
-  },
-  subtitle: {
-    color: colors.textSecondary,
-    fontSize: typography.caption,
-  },
-  helper: {
-    color: colors.muted,
-    fontSize: typography.caption,
-  },
-});
+const createStyles = ({ colors, spacing, radii, typography }) =>
+  StyleSheet.create({
+    tile: {
+      flexDirection: 'row',
+      gap: spacing.md,
+      padding: spacing.md,
+      borderRadius: radii.md,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surfaceRaised,
+    },
+    tileActive: {
+      borderColor: colors.accent,
+      backgroundColor: colors.surface,
+    },
+    indicator: {
+      width: 22,
+      height: 22,
+      borderWidth: 2,
+      borderColor: colors.muted,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    circle: {
+      borderRadius: 12,
+    },
+    square: {
+      borderRadius: 6,
+    },
+    indicatorOn: {
+      backgroundColor: colors.accent,
+      borderColor: colors.accent,
+    },
+    indicatorOff: {
+      backgroundColor: 'transparent',
+    },
+    texts: {
+      flex: 1,
+      gap: 2,
+    },
+    title: {
+      color: colors.textPrimary,
+      fontWeight: typography.weightBold,
+      fontSize: typography.body,
+    },
+    subtitle: {
+      color: colors.textSecondary,
+      fontSize: typography.caption,
+    },
+    helper: {
+      color: colors.muted,
+      fontSize: typography.caption,
+    },
+  });

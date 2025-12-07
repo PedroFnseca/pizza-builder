@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppTextInput from '../components/AppTextInput';
@@ -6,7 +6,7 @@ import Card from '../components/Card';
 import EmptyState from '../components/EmptyState';
 import ErrorMessage from '../components/ErrorMessage';
 import SectionHeader from '../components/SectionHeader';
-import { PizzasService } from '../../service';
+import { usePizzasQuery } from '../query/hooks';
 import { colors, spacing, typography } from '../styles/theme';
 
 const formatMoney = (value) => `$${Number(value ?? 0).toFixed(2)}`;
@@ -17,38 +17,29 @@ const formatDate = (value) => {
 };
 
 export default function OrdersScreen({ navigation }) {
-  const [pizzas, setPizzas] = useState([]);
   const [customerFilter, setCustomerFilter] = useState('');
+  const [debouncedCustomer, setDebouncedCustomer] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');
   const [order, setOrder] = useState('desc');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const filters = useMemo(
+    () => ({
+      customerName: debouncedCustomer.trim() || undefined,
+      sortBy,
+      order,
+    }),
+    [debouncedCustomer, order, sortBy]
+  );
 
-  const fetchPizzas = async () => {
-    try {
-      setLoading(true);
-      setError('');
-      const data = await PizzasService.list({
-        customerName: customerFilter.trim() || undefined,
-        sortBy,
-        order,
-      });
-      setPizzas(data ?? []);
-    } catch (err) {
-      setError(err.message || 'Failed to fetch pizzas');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: pizzasData = [], isLoading, isFetching, error, refetch } = usePizzasQuery(filters);
 
   useEffect(() => {
-    fetchPizzas();
-  }, [sortBy, order]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => fetchPizzas(), 400);
+    const timer = setTimeout(() => setDebouncedCustomer(customerFilter), 400);
     return () => clearTimeout(timer);
   }, [customerFilter]);
+
+  const loading = isLoading || isFetching;
+  const pizzas = pizzasData ?? [];
+  const errorMessage = error?.message;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -83,7 +74,7 @@ export default function OrdersScreen({ navigation }) {
             />
           </View>
         </View>
-        <AppButton title="Refresh" onPress={fetchPizzas} />
+        <AppButton title="Refresh" onPress={refetch} />
       </Card>
 
       <SectionHeader title="Orders" />
@@ -92,8 +83,8 @@ export default function OrdersScreen({ navigation }) {
           <ActivityIndicator color={colors.accent} />
           <Text style={styles.loadingText}>Loading pizzas…</Text>
         </View>
-      ) : error ? (
-        <ErrorMessage message={error} />
+      ) : errorMessage ? (
+        <ErrorMessage message={errorMessage} />
       ) : pizzas.length === 0 ? (
         <EmptyState message="No pizzas found" />
       ) : (

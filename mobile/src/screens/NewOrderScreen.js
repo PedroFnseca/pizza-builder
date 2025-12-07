@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppTextInput from '../components/AppTextInput';
@@ -8,40 +8,42 @@ import InfoRow from '../components/InfoRow';
 import LoadingOverlay from '../components/LoadingOverlay';
 import SectionHeader from '../components/SectionHeader';
 import SelectableTile from '../components/SelectableTile';
-import { IngredientsService, PizzasService, SizesService } from '../../service';
+import {
+  useCreatePizzaMutation,
+  useIngredientsQuery,
+  useSizesQuery,
+} from '../query/hooks';
 import { colors, spacing } from '../styles/theme';
 
 const formatMoney = (value) => `$${Number(value ?? 0).toFixed(2)}`;
 
 export default function NewOrderScreen({ navigation }) {
-  const [sizes, setSizes] = useState([]);
-  const [ingredients, setIngredients] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [sizeId, setSizeId] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setError('');
-        const [sizesData, ingredientsData] = await Promise.all([
-          SizesService.list(),
-          IngredientsService.list(),
-        ]);
-        setSizes(sizesData ?? []);
-        setIngredients(ingredientsData ?? []);
-      } catch (err) {
-        setError(err.message || 'Failed to load options');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const {
+    data: sizesData = [],
+    isLoading: sizesLoading,
+    error: sizesError,
+    refetch: refetchSizes,
+  } = useSizesQuery();
 
-    load();
-  }, []);
+  const {
+    data: ingredientsData = [],
+    isLoading: ingredientsLoading,
+    error: ingredientsError,
+    refetch: refetchIngredients,
+  } = useIngredientsQuery();
+
+  const { mutateAsync: createPizza, isPending: submitting, error: createError } =
+    useCreatePizzaMutation();
+
+  const sizes = sizesData ?? [];
+  const ingredients = ingredientsData ?? [];
+  const loading = sizesLoading || ingredientsLoading;
+  const errorMessage = error || createError?.message || sizesError?.message || ingredientsError?.message;
 
   const toggleIngredient = (id) => {
     setSelectedIngredients((prev) =>
@@ -65,9 +67,8 @@ export default function NewOrderScreen({ navigation }) {
 
   const handleSubmit = async () => {
     try {
-      setSubmitting(true);
       setError('');
-      const created = await PizzasService.create({
+      const created = await createPizza({
         customerName,
         sizeId,
         ingredientIds: selectedIngredients,
@@ -78,8 +79,6 @@ export default function NewOrderScreen({ navigation }) {
       }
     } catch (err) {
       setError(err.message || 'Could not create pizza');
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -131,7 +130,19 @@ export default function NewOrderScreen({ navigation }) {
           <InfoRow label="Total" value={formatMoney(totalPrice)} />
         </Card>
 
-        <ErrorMessage message={error} />
+        <ErrorMessage message={errorMessage} />
+
+        {errorMessage ? (
+          <AppButton
+            title="Retry loading options"
+            onPress={() => {
+              refetchSizes();
+              refetchIngredients();
+            }}
+            disabled={loading}
+            variant="secondary"
+          />
+        ) : null}
 
         <AppButton
           title="Create pizza"

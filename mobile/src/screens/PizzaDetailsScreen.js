@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { usePizzaQuery } from '../query/hooks';
 import Card from '../components/Card';
 import EmptyState from '../components/EmptyState';
 import InfoRow from '../components/InfoRow';
-import { PizzasService } from '../../service';
 import { colors, spacing, typography } from '../styles/theme';
 
 const formatMoney = (value) => `$${Number(value ?? 0).toFixed(2)}`;
@@ -15,33 +15,24 @@ const formatDateTime = (value) => {
 
 export default function PizzaDetailsScreen({ route }) {
   const { id, initialPizza } = route.params || {};
-  const [pizza, setPizza] = useState(initialPizza || null);
-  const [loading, setLoading] = useState(!initialPizza);
   const [notFound, setNotFound] = useState(false);
-  const [error, setError] = useState('');
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        if (!initialPizza) setLoading(true);
-        setError('');
-        setNotFound(false);
-        const data = await PizzasService.get(id);
-        console.log('Loaded pizza data:', data);
-        setPizza(data);
-      } catch (err) {
-        if (err.status === 404) {
-          setNotFound(true);
-        } else {
-          setError(err.message || 'Failed to load pizza');
-        }
-      } finally {
-        if (!initialPizza) setLoading(false);
-      }
-    };
+  useEffect(() => setNotFound(false), [id]);
 
-    if (id) load();
-  }, [id, initialPizza]);
+  const {
+    data: pizza,
+    isLoading,
+    isFetching,
+    error,
+  } = usePizzaQuery(id, {
+    initialData: initialPizza,
+    refetchOnMount: true,
+    onError: (err) => {
+      if (err?.status === 404) setNotFound(true);
+    },
+  });
+
+  const loading = isLoading || isFetching;
 
   if (loading) {
     return (
@@ -56,8 +47,8 @@ export default function PizzaDetailsScreen({ route }) {
     return <EmptyState message="Pizza not found" />;
   }
 
-  if (error) {
-    return <EmptyState message={error} />;
+  if (error && !notFound) {
+    return <EmptyState message={error.message || 'Failed to load pizza'} />;
   }
 
   if (!pizza) {

@@ -5,7 +5,7 @@ import { useAppTheme } from '../styles/ThemeProvider';
 export default function LoadingOverlay({ visible, message = 'Loading…' }) {
   const theme = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const isVisible = visible === true || visible === 'true';
+  const isVisible = visible === true;
   return (
     <Modal transparent animationType="fade" visible={isVisible}>
       <View style={styles.backdrop}>

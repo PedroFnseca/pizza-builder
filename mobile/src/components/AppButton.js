@@ -5,8 +5,8 @@ import { useAppTheme } from '../styles/ThemeProvider';
 export default function AppButton({ title, onPress, variant = 'primary', fullWidth = true, disabled = false, icon }) {
   const theme = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const isDisabled = disabled === true || disabled === 'true';
-  const isFullWidth = fullWidth === true || fullWidth === 'true';
+  const isDisabled = disabled === true;
+  const isFullWidth = fullWidth === true;
   const variantStyle = styles[variant] ?? styles.primary;
   return (
     <Pressable

@@ -12,7 +12,7 @@ export default function SelectableTile({
 }) {
   const theme = useAppTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const isSelected = selected === true || selected === 'true';
+  const isSelected = selected === true;
   const isCheckbox = type === 'checkbox';
   const indicatorStyle = isSelected ? styles.indicatorOn : styles.indicatorOff;
   const indicatorShape = isCheckbox ? styles.square : styles.circle;

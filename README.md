@@ -40,6 +40,15 @@ Mobile (Expo)
 2) `npm install`
 3) `npm run start` and choose your platform (Android/iOS/Web)
 
+> [!WARNING]  
+> When running the project using **Expo** and selecting the **Android** option to open it through **Expo Go**, you may encounter the following error:
+>
+> `java.lang.String cannot be cast to java.lang.Boolean`
+>
+> This issue is related to an internal application error that currently does not have a confirmed fix.  
+> It may occur when running the project through **Expo Go** on **Android**, though the **Web version runs normally**.
+
+
 ## Testing
 - From `api`: `npm test`
 - CI: `.github/workflows/test-api.yml` runs the same suite on GitHub Actions for every push/PR to `main`.
